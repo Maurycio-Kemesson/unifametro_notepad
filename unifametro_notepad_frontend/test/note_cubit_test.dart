@@ -80,7 +80,11 @@ void main() {
     );
   });
 
-  final testNote = Note(id: 1, title: 'Test', description: 'Test desc');
+  final testNote = Note(
+      id: 1,
+      title: 'Test',
+      description: 'Test desc',
+      createdAt: DateTime.now());
 
   test('emite NoteLoaded ao buscar notas com sucesso', () async {
     when(connectivity.isConnected()).thenAnswer((_) async => true);
