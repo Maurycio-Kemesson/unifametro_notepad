@@ -17,15 +17,17 @@ class NoteRemoteDataSourceImpl implements NoteRemoteDataSource {
 
   NoteRemoteDataSourceImpl(this.client);
 
-  final String baseUrl = 'https://sua-api.com/notes';
-
+  final String baseUrl = 'https://notepad-backend-mqb2.onrender.com/notas';
   @override
   Future<List<NoteModel>> fetchNotes() async {
     try {
-      final http.Response response = await client.get(Uri.parse(baseUrl));
-      if (response.statusCode == 200) {
-        final List data = jsonDecode(response.body);
-        return data.map((json) => NoteModel.fromJson(json)).toList();
+      final http.Response response =
+          await client.get(Uri.parse('$baseUrl?page=0&size=100'));
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final Map<String, dynamic> data =
+            jsonDecode(utf8.decode(response.bodyBytes));
+        final List<dynamic> notes = data['_embedded']['notas'];
+        return notes.map((json) => NoteModel.fromJson(json)).toList();
       } else {
         throw ServerException('Erro ${response.statusCode}');
       }
@@ -50,16 +52,18 @@ class NoteRemoteDataSourceImpl implements NoteRemoteDataSource {
         Uri.parse('$baseUrl/${note.id}'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(note.toJson()));
-    if (response.statusCode != 200) {
+    if (response.statusCode != 204) {
       throw ServerException('Erro ao atualizar nota');
     }
   }
 
   @override
   Future<void> deleteNote({required int id}) async {
-    final http.Response response =
-        await client.delete(Uri.parse('$baseUrl/$id'));
-    if (response.statusCode != 200) {
+    final http.Response response = await client.delete(
+      Uri.parse('$baseUrl/$id'),
+      headers: {'Content-Type': 'application/json'},
+    );
+    if (response.statusCode != 204) {
       throw ServerException('Erro ao deletar nota');
     }
   }

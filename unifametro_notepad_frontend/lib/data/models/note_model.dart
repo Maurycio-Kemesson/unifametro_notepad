@@ -9,18 +9,20 @@ class NoteModel extends Note {
   });
 
   factory NoteModel.fromJson(Map<String, dynamic> json) {
+    final id =
+        int.parse(Uri.parse(json['_links']['self']['href']).pathSegments.last);
     return NoteModel(
-      id: json['id'],
-      title: json['title'],
-      description: json['description'],
-      createdAt:
-          DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
+      id: id,
+      title: json['titulo'],
+      description: json['descricao'],
+      createdAt: DateTime.parse(
+          json['dataCriacao'] ?? DateTime.now().toIso8601String()),
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'title': title,
-        'description': description,
-        'createdAt': createdAt.toIso8601String(),
+        'titulo': title,
+        'descricao': description,
+        'dataCriacao': createdAt.toIso8601String(),
       };
 }

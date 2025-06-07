@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:unifametro_notepad_frontend/core/services/connectivity_service.dart';
 import 'package:unifametro_notepad_frontend/presentation/view/note_form_page.dart';
@@ -19,9 +20,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('pt_BR', null);
 
-  // final http.Client client = http.Client();
-  // final NoteRemoteDataSource datasource = NoteRemoteDataSource(client);
-  final NoteRemoteDataSource datasource = MockNoteRemoteDataSource();
+  final http.Client client = http.Client();
+  final NoteRemoteDataSource datasource = NoteRemoteDataSourceImpl(client);
+  // final NoteRemoteDataSource datasource = MockNoteRemoteDataSource();
   final NoteRepositoryImpl repository = NoteRepositoryImpl(datasource);
   final ConnectivityService connectivityService = ConnectivityService();
 

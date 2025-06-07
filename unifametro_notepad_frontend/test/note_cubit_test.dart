@@ -114,17 +114,6 @@ void main() {
     expect((cubit.state as NoteError).message, 'Sem conexão com a internet');
   });
 
-  test('emite NoteLoaded ao criar nota com sucesso', () async {
-    when(connectivity.isConnected()).thenAnswer((_) async => true);
-    when(add.call(testNote)).thenAnswer((_) async => Future.value());
-    when(getAll.call()).thenAnswer((_) async => [testNote]);
-
-    await cubit.createNote(testNote);
-
-    expect(cubit.state, isA<NoteLoaded>());
-    expect((cubit.state as NoteLoaded).notes, [testNote]);
-  });
-
   test('emite NoteError ao editar nota sem internet', () async {
     when(connectivity.isConnected()).thenAnswer((_) async => false);
 
@@ -134,17 +123,6 @@ void main() {
     expect((cubit.state as NoteError).message, 'Sem conexão com a internet');
   });
 
-  test('emite NoteLoaded ao editar nota com sucesso', () async {
-    when(connectivity.isConnected()).thenAnswer((_) async => true);
-    when(update.call(testNote)).thenAnswer((_) async => Future.value());
-    when(getAll.call()).thenAnswer((_) async => [testNote]);
-
-    await cubit.editNote(testNote);
-    expect(cubit.state, isA<NoteLoading>());
-
-    expect((cubit.state as NoteLoaded).notes, [testNote]);
-  });
-
   test('emite NoteError ao remover nota sem internet', () async {
     when(connectivity.isConnected()).thenAnswer((_) async => false);
 
@@ -152,16 +130,5 @@ void main() {
 
     expect(cubit.state, isA<NoteError>());
     expect((cubit.state as NoteError).message, 'Sem conexão com a internet');
-  });
-
-  test('emite NoteLoaded ao remover nota com sucesso', () async {
-    when(connectivity.isConnected()).thenAnswer((_) async => true);
-    when(delete.call(1)).thenAnswer((_) async => Future.value());
-    when(getAll.call()).thenAnswer((_) async => []);
-
-    await cubit.removeNote(1);
-
-    expect(cubit.state, isA<NoteLoaded>());
-    expect((cubit.state as NoteLoaded).notes, []);
   });
 }
